@@ -1,0 +1,11 @@
+version: '3'
+services:
+  app:
+    container_name: dockerized-todo-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3000'
+    environment:
+      - NODE_ENV=development
