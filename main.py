@@ -1,9 +1,14 @@
 from tkinter import *
 #from tkinter.ttk import *
 import os
+import tkinter as tk
+from tkinter import filedialog
+from tkinter.filedialog import FileDialog
+from turtle import fd
 import webbrowser
 
 from numpy.distutils.fcompiler import none
+
 
 
 def reactApp():
@@ -28,13 +33,29 @@ if __name__ == '__main__':
     screen1 = Tk()
     screen1.title("Project02")
     screen1.geometry('1920x1920')
-    Label(screen1,text="Automated Dockerization",font=('Arial',50)).grid(column = 2,row=1)
+    Label(screen1,text="Automated Dockerization",font=('Arial',15)).grid(column = 2,row=1)
 
-    Label(screen1,text="Manual Configuration",background='red',foreground='white',font=('Arial',15)).grid(column = 3, row = 2, padx=12, pady=25)
+    Label(screen1,text="Select Directory",background='red',foreground='white',font=('Arial',15)).grid(column = 1, row = 2, padx=12, pady=25)
+
+
+    #--------------directory-----------------
+
+    
+    def browse_button():
+        filename = filedialog.askdirectory()
+        print(filename)
+        return filename
+   # screen1 = Tk()
+    v = StringVar()
+    button2 = Button(text="Browse",font=('Arial',15) , command=browse_button).grid(row=2, column=2)
+
+    #--------------directory-----------------
 
     #React.js
 
     Label(screen1, text="Enter Project Name : ",font=('Arial',15)).grid(column=2, row=5)
+
+    Label(screen1,text="ReactJS",background='blue',foreground='white',font=('Arial',15)).grid(column = 1, row = 3, padx=12, pady=25)
 
     myReactProjectName = Entry(screen1,width=30,font=('Arial',15) )
     myReactProjectName.insert(0, 'TodoApp')
@@ -153,15 +174,15 @@ if __name__ == '__main__':
     clicked.set( "Select language" )
 
     # Create Dropdown menu
-    drop = OptionMenu( screen1 , clicked , *options )
-    drop.grid(column=3, row=3)
+    # drop = OptionMenu( screen1 , clicked , *options )
+    # drop.grid(column=3, row=3)
 
-    # Create button, it will change label text
-    button = Button( screen1 , text = "Click Me" , command = show , font=('Arial',15)).grid(column=3, row = 4)
+    # # Create button, it will change label text
+    # button = Button( screen1 , text = "Click Me" , command = show , font=('Arial',15)).grid(column=3, row = 4)
 
-    # Create Label
-    label = Label( screen1 , text = " " )
-    label.grid()
+    # # Create Label
+    # label = Label( screen1 , text = " " )
+    # label.grid()
 
     #Express.js
 
@@ -177,11 +198,6 @@ if __name__ == '__main__':
     portNumberEX = Entry(screen1, width=27,font=('Arial',15))
     portNumberEX.insert(0, 'Ex. 8080')
     portNumberEX.grid(column=3, row=20, padx=12, pady=10,ipady=5)
-
-
-
-
-
 
 
 
