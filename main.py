@@ -5,9 +5,13 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter.filedialog import FileDialog
 from turtle import fd
+from venv import create
 import webbrowser
+from distutils.dir_util import copy_tree
+from pathlib import Path
 
 from numpy.distutils.fcompiler import none
+
 
 
 
@@ -28,6 +32,29 @@ def dockerCompose():
     os.system('docker-compose up')
     webbrowser.open_new_tab('192.168.1.108:8080') or webbrowser.open_new('192.168.1.108:8080')
 
+def browse_button(screen1):
+    screen1.directory = filedialog.askdirectory()
+
+def createReactDockerFile(appName, portNo, dir):
+    # print (dir)
+    Path("my-app").mkdir(parents=True, exist_ok=True)
+    copy_tree(dir, "my-app")
+    os.chdir('my-app')
+
+    with open("Dockerfile",'w',encoding = 'utf-8') as f:
+        f.write('FROM node:18-alpine3.15\n')
+        f.write('WORKDIR /app\n')
+        f.write('ENV PATH /app/node_modules/.bin:$PATH\n')
+        f.write('COPY . .\n')
+        f.write('RUN npm install\n')
+        f.write('RUN npm install react-scripts@5.0.1 -g\n')
+        f.write('EXPOSE {}/tcp\n'.format(portNo))
+        f.write('CMD ["npm", "start"]')
+
+    os.system('docker build -t {}:latest .'.format(appName))
+
+    os.system('docker run -d {}:latest'.format(appName))
+
 
 if __name__ == '__main__':
     screen1 = Tk()
@@ -41,13 +68,10 @@ if __name__ == '__main__':
     #--------------directory-----------------
 
     
-    def browse_button():
-        filename = filedialog.askdirectory()
-        print(filename)
-        return filename
+    
    # screen1 = Tk()
     v = StringVar()
-    button2 = Button(text="Browse",font=('Arial',15) , command=browse_button).grid(row=2, column=2)
+    
 
     #--------------directory-----------------
 
@@ -68,7 +92,17 @@ if __name__ == '__main__':
     portNumberReact.insert(0, 'Ex. 8080')
     portNumberReact.grid(column=3, row=6, padx=12, pady=10,ipady=5)
 
-    Button(screen1, text="Start React app", command=reactApp, fg="green", bg="white",font=('Arial',15)).grid(column=3, row=7,ipady=5)
+    button2 = Button(text="Browse",font=('Arial',15) , command=lambda : browse_button(screen1)).grid(row=2, column=2)
+
+   
+    
+
+    Button(screen1,
+            text="Start React app", 
+            command=lambda : createReactDockerFile(myReactProjectName.get(), portNumberReact.get(), screen1.directory),
+            fg="green",
+            bg="white",
+            font=('Arial',15)).grid(column=3, row=7,ipady=5)
     # # create volume for Wordpress
     # Label(screen1, text="Enter Volume name for wordpress : ",font=('Arial',15)).grid(column=2, row=5)
 
