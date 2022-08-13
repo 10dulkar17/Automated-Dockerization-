@@ -31,8 +31,8 @@ def dockerManuall():
     print('docker run -dit -e WORDPRESS_DB_HOST={} -e WORDPRESS_DB_USER={} -e WORDPRESS_DB_PASSWORD={} -e WORDPRESS_DB_NAME={} -v {}:/var/www/html --name {} -p {}:{}  --link {} wordpress:5.1'.format(mysqlContainerName.get(),mySQLUsername.get(),mySQLPassword.get(),mySQLDatabase.get(),createVolWordpress.get(),wordpressContainerName.get(),int(portNumber.get()),int(portNumber2.get()),mysqlContainerName.get()))
 
 def dockerCompose():
-    os.system('docker-compose up')
-    webbrowser.open_new_tab('192.168.1.108:8080') or webbrowser.open_new('192.168.1.108:8080')
+    os.system('docker-compose up -d')
+    webbrowser.open_new_tab('http://localhost:8080') or webbrowser.open_new('http://localhost:8080')
 
 def browse_button(screen1):
     screen1.directory = filedialog.askdirectory()
@@ -60,8 +60,8 @@ def createReactDockerFile(appName, portNo, dir):
 
 if __name__ == '__main__':
     screen1 = Tk()
-    screen1.title("Project02")
-    screen1.geometry('1520x900')
+    screen1.title("Automated Dockerization")
+    screen1.geometry('1520x950')
     screen1.resizable(False, False)
     screen1.bind('<Escape>',lambda e: screen1.destroy())
     Label(screen1,text="Automated Dockerization",font=('bold',20)).grid(column = 4,row=1)
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     portNumberReact.insert(0, 'Ex. 8080')
     portNumberReact.grid(column=4, row=4, padx=12, pady=10,ipady=5)
 
-    button2 = Button(text="Browse",font=('Arial',15) , command=lambda : browse_button(screen1)).grid(row=2, column=4)
+    button2 = Button(text="Browse",font=('Arial',15),fg="green", bg="white" , command=lambda : browse_button(screen1)).grid(row=2, column=4)
 
    
     
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
      #--------------------ReactJS------------------
     separator = ttk.Separator(screen1, orient='horizontal')
-    separator.place(relx=0, rely=0.24, relwidth=1, relheight=1)
+    separator.place(relx=0, rely=0.22, relwidth=1, relheight=1)
  
 
     #---------------------Wordpress----------------
@@ -181,46 +181,52 @@ if __name__ == '__main__':
     portNumber.insert(0, 'Ex. 8080')
     portNumber.grid(column=4, row=14, padx=12, pady=10,ipady=5)
 
+   # Label(screen1, text=":",font=('Arial',15)).grid(column = 5, row = 14)
 
-    Button(screen1, text="Submit", command=dockerManuall, fg="green", bg="white",font=('Arial',15)).grid(column=5, row=14,ipady=5)
+    portNumber2 = Entry(screen1, width=27,font=('Arial',15))
+    portNumber2.insert(0, 'Ex. 80')
+    portNumber2.grid(column=5, row=14, padx=1, pady=10,ipady=5)
+
+
+    Button(screen1, text="Manual Start WordPress", command=dockerManuall, fg="green", bg="white",font=('Arial',15)).grid(column=3, row=16,ipady=5)
 
     # One CLick auto configure
 
     #Label(screen1,text="One click and Auto Configure using docker compose file",background='green',foreground='white',font=('Arial',15)).grid(column = 3, row = 17, padx=12, pady=10)
 
-    btn1 = Button(screen1, text="Start WordPress", command=dockerCompose, fg="green", bg="white",font=('Arial',15))
-    btn1.grid(column=6, row=14,padx=15,pady=10,ipady=5)
+    btn1 = Button(screen1, text="Auto Start WordPress", command=dockerCompose, fg="green", bg="white",font=('Arial',15))
+    btn1.grid(column=4, row=16,padx=15,pady=10,ipady=5)
 
 
 
-    # datatype of menu text
-    clicked = StringVar()
+    # # datatype of menu text
+    # clicked = StringVar()
 
-    # initial menu text
-    clicked.set( "Select language" )
+    # # initial menu text
+    # clicked.set( "Select language" )
 
 
    
     #---------------------Wordpress----------------
 
     separator = ttk.Separator(screen1, orient='horizontal')
-    separator.place(relx=0, rely=0.82, relwidth=1, relheight=1)
+    separator.place(relx=0, rely=0.84, relwidth=1, relheight=1)
 
     #--------------Express.js--------------------
-    Label(screen1,text="ExpressJS",background='red',foreground='white',font=('Arial',20)).grid(column = 2, row = 15, padx=12, pady=10)
+    Label(screen1,text="ExpressJS",background='red',foreground='white',font=('Arial',20)).grid(column = 2, row = 17, padx=12, pady=10)
 
-    Label(screen1, text="Enter Project Name : ",font=('Arial',15)).grid(column=3, row=15)
+    Label(screen1, text="Enter Project Name : ",font=('Arial',15)).grid(column=3, row=17)
 
     myExpressProjectName = Entry(screen1,width=30,font=('Arial',15) )
     myExpressProjectName.insert(0, 'Ex. myDB')
-    myExpressProjectName.grid(column=4, row=15, padx=10, pady=10,ipady=5)
+    myExpressProjectName.grid(column=4, row=17, padx=10, pady=10,ipady=5)
 
 
-    Label(screen1, text="Port Number : ",font=('Arial',15)).grid(column=3, row=16)
+    Label(screen1, text="Port Number : ",font=('Arial',15)).grid(column=3, row=18)
 
     portNumberEX = Entry(screen1, width=27,font=('Arial',15))
     portNumberEX.insert(0, 'Ex. 8080')
-    portNumberEX.grid(column=4, row=16, padx=12, pady=10,ipady=5)
+    portNumberEX.grid(column=4, row=18, padx=12, pady=10,ipady=5)
 
 
     #--------------Express.js--------------------
