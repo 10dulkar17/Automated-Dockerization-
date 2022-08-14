@@ -11,6 +11,7 @@ from venv import create
 import webbrowser
 from distutils.dir_util import copy_tree
 from pathlib import Path
+import shutil
 
 from numpy.distutils.fcompiler import none
 
@@ -39,9 +40,17 @@ def browse_button(screen1):
 
 def createReactDockerFile(appName, portNo, dir):
     # print (dir)
-    Path("my-app").mkdir(parents=True, exist_ok=True)
-    copy_tree(dir, "my-app")
-    os.chdir('my-app')
+    app_folder = 'react-app'
+    images = 'docker images | grep {}:latest'.format(appName)
+    rm_image = 'docker rmi {}:latest'.format(appName)
+    if os.system(images):
+        os.system(rm_image)
+    dirpath = Path(os.getcwd()) / app_folder
+    if dirpath.exists() and dirpath.is_dir():
+        shutil.rmtree(app_folder)
+    os.mkdir(app_folder)
+    copy_tree(dir, app_folder)
+    os.chdir(app_folder)
 
     with open("Dockerfile",'w',encoding = 'utf-8') as f:
         f.write('FROM node:18-alpine3.15\n')
@@ -50,18 +59,44 @@ def createReactDockerFile(appName, portNo, dir):
         f.write('COPY . .\n')
         f.write('RUN npm install\n')
         f.write('RUN npm install react-scripts@5.0.1 -g\n')
-        f.write('EXPOSE {}/tcp\n'.format(portNo))
+        #f.write('EXPOSE {}/tcp\n'.format(portNo))
         f.write('CMD ["npm", "start"]')
 
     os.system('docker build -t {}:latest .'.format(appName))
 
-    os.system('docker run -d {}:latest'.format(appName))
+    os.system('docker run -d -p {}:3000 {}:latest'.format(portNo, appName))
 
+def createExpressDockerFile(appName, portNo, dir):
+    app_folder = 'express-app'
+    images = 'docker images | grep {}:latest'.format(appName)
+    rm_image = 'docker rmi {}:latest'.format(appName)
+    if os.system(images):
+        os.system(rm_image)
+    dirpath = Path(os.getcwd()) / app_folder
+    if dirpath.exists() and dirpath.is_dir():
+        shutil.rmtree(app_folder)
+    os.mkdir(app_folder)
+    copy_tree(dir, app_folder)
+    os.chdir(app_folder)
+
+    with open("Dockerfile",'w',encoding = 'utf-8') as f:
+        f.write('FROM node:18-alpine3.15\n')
+        f.write('WORKDIR /app\n')
+        f.write('ENV PATH /app/node_modules/.bin:$PATH\n')
+        f.write('COPY . .\n')
+        f.write('RUN npm install\n')
+        f.write('RUN npm install react-scripts@5.0.1 -g\n')
+        #f.write('EXPOSE {}/tcp\n'.format(portNo))
+        f.write('CMD ["npm", "start"]')
+
+    os.system('docker build -t {}:latest .'.format(appName))
+
+    os.system('docker run -d -p {}:3000 {}:latest'.format(portNo, appName))
 
 if __name__ == '__main__':
     screen1 = Tk()
     screen1.title("Automated Dockerization")
-    screen1.geometry('1520x950')
+    screen1.geometry('1520x980')
     screen1.resizable(False, False)
     screen1.bind('<Escape>',lambda e: screen1.destroy())
     Label(screen1,text="Automated Dockerization",font=('bold',20)).grid(column = 4,row=1)
@@ -210,7 +245,7 @@ if __name__ == '__main__':
     #---------------------Wordpress----------------
 
     separator = ttk.Separator(screen1, orient='horizontal')
-    separator.place(relx=0, rely=0.84, relwidth=1, relheight=1)
+    separator.place(relx=0, rely=0.81, relwidth=1, relheight=1)
 
     #--------------Express.js--------------------
     Label(screen1,text="ExpressJS",background='red',foreground='white',font=('Arial',20)).grid(column = 2, row = 17, padx=12, pady=10)
@@ -227,6 +262,13 @@ if __name__ == '__main__':
     portNumberEX = Entry(screen1, width=27,font=('Arial',15))
     portNumberEX.insert(0, 'Ex. 8080')
     portNumberEX.grid(column=4, row=18, padx=12, pady=10,ipady=5)
+
+    Button(screen1,
+            text="Start Express app", 
+            command=lambda : createExpressDockerFile(myExpressProjectName.get(), portNumberEX.get(), screen1.directory),
+            fg="green",
+            bg="white",
+            font=('Arial',15)).grid(column=5, row=18,ipady=5)
 
 
     #--------------Express.js--------------------
